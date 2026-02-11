@@ -49,7 +49,8 @@
             margin: 0;
             padding: 0;
             overflow: hidden;
-            transition: background 0.15s ease-out;
+            /* Animation für das Überblenden der Umgebung */
+            animation: ambientFlash 0.5s ease-out forwards calc(var(--line-delay) + var(--line-duration));
         }
 
         .container {
@@ -95,10 +96,9 @@
             width: 0;
             background-color: var(--accent-color);
             position: relative;
-            /* Erst Aufbau, dann der fließende Doppel-Blitz */
             animation: 
                 growLine var(--line-duration) forwards var(--line-delay),
-                lineFlashFade 0.8s ease-in-out forwards calc(var(--line-delay) + var(--line-duration));
+                lineFlash 0.5s ease-out forwards calc(var(--line-delay) + var(--line-duration));
         }
 
         p {
@@ -125,7 +125,8 @@
 
         footer a:hover { color: var(--glow-color); }
 
-        /* KEYFRAMES */
+        /* --- KEYFRAMES --- */
+
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
@@ -136,13 +137,22 @@
             to { width: var(--line-width); }
         }
 
-        /* Der Doppel-Blitz mit sanfter Überblendung */
-        @keyframes lineFlashFade {
+        /* Blitz der Linie */
+        @keyframes lineFlash {
             0% { background-color: var(--accent-color); box-shadow: 0 0 0px transparent; }
-            15% { background-color: #ffffff; box-shadow: 0 0 15px var(--glow-color); }
-            30% { background-color: var(--accent-color); box-shadow: 0 0 5px var(--glow-color); }
-            45% { background-color: #ffffff; box-shadow: 0 0 25px var(--glow-color); }
+            20% { background-color: #ffffff; box-shadow: 0 0 20px var(--glow-color); }
+            40% { background-color: var(--accent-color); box-shadow: 0 0 2px var(--glow-color); }
+            60% { background-color: #ffffff; box-shadow: 0 0 25px var(--glow-color); }
             100% { background-color: var(--accent-color); box-shadow: 0 0 8px var(--glow-color); }
+        }
+
+        /* NEU: Überblenden der Umgebung (Ambient Flash) */
+        @keyframes ambientFlash {
+            0% { --spotlight-opacity: 0.18; --spotlight-size: 60%; }
+            20% { --spotlight-opacity: 0.45; --spotlight-size: 90%; }
+            40% { --spotlight-opacity: 0.22; --spotlight-size: 65%; }
+            60% { --spotlight-opacity: 0.55; --spotlight-size: 100%; }
+            100% { --spotlight-opacity: 0.18; --spotlight-size: 60%; }
         }
     </style>
 </head>
