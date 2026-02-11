@@ -20,7 +20,7 @@
     <style>
         :root {
             --line-width: 160px;     
-            --line-duration: 1.2s;    /* Etwas zügigerer Aufbau */
+            --line-duration: 1.2s;    
             --line-delay: 0.8s;       
             --accent-color: #a30015;  
             --glow-color: #ff4d4d;    
@@ -84,7 +84,7 @@
         .line-wrapper {
             position: relative;
             margin: 2.5rem auto;
-            height: 10px; /* Mehr Klickfläche und Raum für Glow */
+            height: 12px; 
             display: flex;
             justify-content: center;
             align-items: center;
@@ -95,12 +95,12 @@
             width: 0;
             background-color: var(--accent-color);
             position: relative;
-            /* Kombinierte Animation: Erst wachsen, dann Doppel-Blitz */
+            /* Erst Aufbau, dann der fließende Doppel-Blitz */
             animation: 
                 growLine var(--line-duration) forwards var(--line-delay),
-                lineFlash 0.5s ease-out forwards calc(var(--line-delay) + var(--line-duration));
+                lineFlashFade 0.8s ease-in-out forwards calc(var(--line-delay) + var(--line-duration));
         }
-        
+
         p {
             font-size: 0.75rem;
             text-transform: uppercase;
@@ -136,15 +136,14 @@
             to { width: var(--line-width); }
         }
 
-        /* Die gesamte Linie blitzt doppelt auf */
-        @keyframes lineFlash {
+        /* Der Doppel-Blitz mit sanfter Überblendung */
+        @keyframes lineFlashFade {
             0% { background-color: var(--accent-color); box-shadow: 0 0 0px transparent; }
-            20% { background-color: #ffffff; box-shadow: 0 0 15px var(--glow-color); }
-            40% { background-color: var(--accent-color); box-shadow: 0 0 2px var(--glow-color); }
-            60% { background-color: #ffffff; box-shadow: 0 0 20px var(--glow-color); }
+            15% { background-color: #ffffff; box-shadow: 0 0 15px var(--glow-color); }
+            30% { background-color: var(--accent-color); box-shadow: 0 0 5px var(--glow-color); }
+            45% { background-color: #ffffff; box-shadow: 0 0 25px var(--glow-color); }
             100% { background-color: var(--accent-color); box-shadow: 0 0 8px var(--glow-color); }
         }
-
     </style>
 </head>
 <body>
@@ -153,8 +152,7 @@
         <h1>VON BUCHWALD</h1>
         <a href="links.html" class="stealth-link">
             <div class="line-wrapper">
-                <div class="line">
-                </div>
+                <div class="line"></div>
             </div>
         </a>
         <p>Private Domain</p>
