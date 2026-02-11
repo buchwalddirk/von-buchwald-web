@@ -9,10 +9,12 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://von-buchwald.de/">
     <meta property="og:title" content="VON BUCHWALD">
-    <meta property="og:description" content="Private Domain | Mönchengladbach">
+    <meta property="og:description" content="Private Domain | MÃ¶nchengladbach">
     <meta property="og:image" content="preview.png?v=1"> <meta property="twitter:card" content="summary_large_image">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
     <meta property="twitter:title" content="VON BUCHWALD">
-    <meta property="twitter:description" content="Private Domain | Mönchengladbach">
+    <meta property="twitter:description" content="Private Domain | MÃ¶nchengladbach">
     <meta property="twitter:image" content="preview.png?v=1">
 
     <link rel="manifest" href="manifest.json">
@@ -25,15 +27,15 @@
             /* ANIMATIONS-STEUERUNG LINIE */
             --line-width: 160px;     
             --line-duration: 1.5s;    /* Geschwindigkeit des Linien-Aufbaus */
-            --line-delay: 0.8s;       /* Verzögerung bis zum Start der Animation */
+            --line-delay: 0.8s;       /* VerzÃ¶gerung bis zum Start der Animation */
             --accent-color: #a30015;  /* Dein Bordeaux HEX */
-            --glow-color: #ff4d4d;    /* Leuchtfarbe für Blitze und Hover */
+            --glow-color: #ff4d4d;    /* Leuchtfarbe fÃ¼r Blitze und Hover */
 
             /* SPOTLIGHT (TASCHENLAMPE) 
                Simuliert das "Blooming" von Local Dimming Panels */
             --spotlight-hex: #a30015;       
             --spotlight-size: 60%;          /* Weichheit des Lichtkegels */
-            --spotlight-opacity: 0.18;      /* Stärke der Hintergrund-Aura */
+            --spotlight-opacity: 0.18;      /* StÃ¤rke der Hintergrund-Aura */
 
             /* DYNAMISCHE PARAMETER (Steuerung via Script am Ende) */
             --mouse-x: 50%;
@@ -42,7 +44,7 @@
 
         body {
             background-color: #0d0d0d;
-            /* Der dynamische Lichtkegel: Nutzt color-mix für HEX+Opacity */
+            /* Der dynamische Lichtkegel: Nutzt color-mix fÃ¼r HEX+Opacity */
             background-image: radial-gradient(
                 circle at var(--mouse-x) var(--mouse-y), 
                 color-mix(in srgb, var(--spotlight-hex), transparent calc(100% - (var(--spotlight-opacity) * 100%))) 0%, 
@@ -57,7 +59,7 @@
             margin: 0;
             padding: 0;
             overflow: hidden;
-            /* Transition für die physikalische Trägheit des Lichts hinter der Maus */
+            /* Transition fÃ¼r die physikalische TrÃ¤gheit des Lichts hinter der Maus */
             transition: background 0.15s ease-out;
         }
 
@@ -97,12 +99,12 @@
             width: 0;
             background-color: var(--accent-color);
             box-shadow: 0 0 8px var(--glow-color);
-            /* Startet zeitversetzt und fährt auf --line-width aus */
+            /* Startet zeitversetzt und fÃ¤hrt auf --line-width aus */
             animation: growLine var(--line-duration) forwards var(--line-delay);
         }
 
-        /* DER FLÜCHTIGE LICHTBLITZ (Subliminaler Effekt)
-           Erscheint nur für 0.2s am Ende der Linien-Animation */
+        /* DER FLÃœCHTIGE LICHTBLITZ (Subliminaler Effekt)
+           Erscheint nur fÃ¼r 0.2s am Ende der Linien-Animation */
         .sparkle {
             position: absolute;
             top: 50%;
@@ -182,7 +184,7 @@
     <script>
         /* MOUSE-TRACKER: 
            Berechnet die Position des Mauszeigers relativ zum Fenster 
-           und übergibt die Werte an das CSS-Spotlight */
+           und Ã¼bergibt die Werte an das CSS-Spotlight */
         document.addEventListener('mousemove', e => {
             const x = (e.clientX / window.innerWidth * 100).toFixed(2);
             const y = (e.clientY / window.innerHeight * 100).toFixed(2);
