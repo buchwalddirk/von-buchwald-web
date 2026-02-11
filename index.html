@@ -100,23 +100,7 @@
                 growLine var(--line-duration) forwards var(--line-delay),
                 lineFlash 0.5s ease-out forwards calc(var(--line-delay) + var(--line-duration));
         }
-
-        /* Die Blitze an den Enden */
-        .sparkle {
-            position: absolute;
-            top: 50%;
-            width: 4px;
-            height: 4px;
-            background-color: #ffffff;
-            border-radius: 50%;
-            opacity: 0;
-            transform: translate(-50%, -50%);
-            animation: sparkleFlash 0.5s ease-out forwards calc(var(--line-delay) + var(--line-duration));
-        }
-
-        .sparkle.left { left: calc(50% - (var(--line-width) / 2)); }
-        .sparkle.right { left: calc(50% + (var(--line-width) / 2)); }
-
+        
         p {
             font-size: 0.75rem;
             text-transform: uppercase;
@@ -161,14 +145,6 @@
             100% { background-color: var(--accent-color); box-shadow: 0 0 8px var(--glow-color); }
         }
 
-        /* Die Endpunkte blitzen synchron mit */
-        @keyframes sparkleFlash {
-            0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
-            20% { transform: translate(-50%, -50%) scale(3); opacity: 1; }
-            40% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
-            60% { transform: translate(-50%, -50%) scale(4); opacity: 1; }
-            100% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
-        }
     </style>
 </head>
 <body>
@@ -178,8 +154,6 @@
         <a href="links.html" class="stealth-link">
             <div class="line-wrapper">
                 <div class="line">
-                    <div class="sparkle left"></div>
-                    <div class="sparkle right"></div>
                 </div>
             </div>
         </a>
