@@ -1,0 +1,27 @@
+{
+  "short_name": "Buchwald",
+  "name": "VON BUCHWALD",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "preview.png",
+      "type": "image/png",
+      "sizes": "593x411"
+    }
+  ],
+  "start_url": "/index.html",
+  "background_color": "#0d0d0d",
+  "display": "standalone",
+  "scope": "/",
+  "theme_color": "#a30015"
+}
