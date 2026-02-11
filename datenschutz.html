@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DATENSCHUTZ | VON BUCHWALD</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+    <style>
+        :root {
+            /* FARBEN & DESIGN - Zentral anpassbar */
+            --accent-color: #a30015;        /* Dein Bordeaux HEX */
+            --glow-color: #ff4d4d;          /* Akzentfarbe für Interaktion */
+
+            /* SPOTLIGHT (TASCHENLAMPE) 
+               Simuliert das Blooming-Verhalten hochwertiger Panels */
+            --spotlight-hex: #a30015;       
+            --spotlight-size: 60%;          /* Weichheit des Lichtkegels */
+            --spotlight-opacity: 0.18;      /* Stärke der Hintergrundbeleuchtung */
+
+            /* INDIREKTE BELEUCHTUNG DES HEADERS */
+            --shield-glow-intensity: 25px;   /* Radius des Schattens/Leuchtens */
+            --shield-border-opacity: 0.15;   /* Härte der Außenkante */
+
+            /* DYNAMISCHE PARAMETER (Steuerung via JS) */
+            --mouse-x: 50%;
+            --mouse-y: 50%;
+        }
+
+        body {
+            background-color: #0d0d0d;
+            /* Spotlight-Effekt mit Trägheit (Transition) */
+            background-image: radial-gradient(
+                circle at var(--mouse-x) var(--mouse-y), 
+                color-mix(in srgb, var(--spotlight-hex), transparent calc(100% - (var(--spotlight-opacity) * 100%))) 0%, 
+                #0d0d0d var(--spotlight-size)
+            );
+            color: #e0e0e0;
+            font-family: 'Inter', -apple-system, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 40px 20px;
+            box-sizing: border-box;
+            /* 0.15s Transition für das "Local Dimming" Feeling */
+            transition: background 0.15s ease-out;
+        }
+
+        .container {
+            max-width: 650px;
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 3rem;
+            background: rgba(255, 255, 255, 0.03);
+            -webkit-backdrop-filter: blur(15px);
+            backdrop-filter: blur(15px);           /* Erzeugt Tiefe hinter dem Text */
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            border-radius: 2px;
+            z-index: 1;
+        }
+
+        /* HEADER-BOX: Das "Schild" mit indirektem Glow nach außen */
+        .header-box {
+            border: 1px solid rgba(163, 0, 21, var(--shield-border-opacity));
+            box-shadow: 0 0 var(--shield-glow-intensity) rgba(163, 0, 21, 0.4);
+            padding: 1.2rem;
+            margin-bottom: 3rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.2); 
+        }
+
+        h1 {
+            font-weight: 200;
+            letter-spacing: 0.6rem;
+            text-transform: uppercase;
+            font-size: 1.4rem;
+            color: #ffffff;
+            margin: 0;
+        }
+
+        h2 {
+            font-weight: 400;
+            font-size: 0.85rem;
+            color: var(--glow-color);
+            margin-top: 2.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15rem;
+        }
+
+        p {
+            font-size: 0.85rem;
+            line-height: 1.7;
+            color: #aaa;
+            margin-bottom: 1rem;
+        }
+
+        /* SPAM-SCHUTZ: E-Mail wird im HTML rückwärts gelistet und per CSS gedreht */
+        .reverse {
+            display: inline-block;
+            unicode-bidi: bidi-override;
+            direction: rtl;
+            color: #fff;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 3rem;
+            text-transform: uppercase;
+            font-size: 0.65rem;
+            letter-spacing: 0.2rem;
+            text-decoration: none;
+            color: #666;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: var(--glow-color);
+            transform: translateX(-5px);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header-box">
+            <h1>Datenschutz</h1>
+        </div>
+
+        <h2>Verantwortlicher</h2>
+        <p>
+            Dirk Jannis von Buchwald<br>
+            Lorenz-G&ouml;rtz-Stra&szlig;e 162<br>
+            41238 M&ouml;nchengladbach<br>
+            E-Mail: <span class="reverse">moc.liamg@bew+kriD.dlawhcuB</span>
+        </p>
+
+        <h2>Datenerfassung & Protokollierung</h2>        
+        <p>
+            Beim Aufruf dieser Webseite werden technisch bedingt Daten verarbeitet, um die Anzeige der Seite zu erm&ouml;glichen. 
+            Die Server-Konfiguration auf meinem privaten System ist so eingestellt, dass <strong>keine dauerhafte Speicherung von Log-Dateien</strong> erfolgt.
+        </p>
+
+        <h2>Kontaktaufnahme</h2>
+        <p>
+            Wenn Sie mich per E-Mail kontaktieren, werden Ihre Angaben zur Bearbeitung Ihrer Anfrage gespeichert. 
+            Diese Daten werden nicht ohne Ihre Einwilligung weitergegeben und gel&ouml;scht, sobald der Zweck der Speicherung entf&auml;llt.
+        </p>
+
+        <h2>Cookies &amp; Tracking</h2>
+        <p>
+            Es werden keine Cookies verwendet. Es kommen keine Analyse-Tools oder externe Ressourcen zum Einsatz.
+        </p>
+
+        <a href="index.html" class="back-link">&#8592; Zur&uuml;ck zur Hauptseite</a>
+    </div>
+
+    <script>
+        /* MOUSE-TRACKER: Reicht die Mauskoordinaten an die CSS-Variablen weiter */
+        document.addEventListener('mousemove', e => {
+            const x = (e.clientX / window.innerWidth * 100).toFixed(2);
+            const y = (e.clientY / window.innerHeight * 100).toFixed(2);
+            document.documentElement.style.setProperty('--mouse-x', `${x}%`);
+            document.documentElement.style.setProperty('--mouse-y', `${y}%`);
+        });
+    </script>
+
+</body>
+</html>

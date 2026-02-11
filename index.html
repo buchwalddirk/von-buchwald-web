@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VON BUCHWALD</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://von-buchwald.de/">
+    <meta property="og:title" content="VON BUCHWALD">
+    <meta property="og:description" content="Private Domain | Mönchengladbach">
+    <meta property="og:image" content="preview.png?v=1"> <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:title" content="VON BUCHWALD">
+    <meta property="twitter:description" content="Private Domain | Mönchengladbach">
+    <meta property="twitter:image" content="preview.png?v=1">
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#a30015">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <style>
+        :root {
+            /* ANIMATIONS-STEUERUNG LINIE */
+            --line-width: 160px;     
+            --line-duration: 1.5s;    /* Geschwindigkeit des Linien-Aufbaus */
+            --line-delay: 0.8s;       /* Verzögerung bis zum Start der Animation */
+            --accent-color: #a30015;  /* Dein Bordeaux HEX */
+            --glow-color: #ff4d4d;    /* Leuchtfarbe für Blitze und Hover */
+
+            /* SPOTLIGHT (TASCHENLAMPE) 
+               Simuliert das "Blooming" von Local Dimming Panels */
+            --spotlight-hex: #a30015;       
+            --spotlight-size: 60%;          /* Weichheit des Lichtkegels */
+            --spotlight-opacity: 0.18;      /* Stärke der Hintergrund-Aura */
+
+            /* DYNAMISCHE PARAMETER (Steuerung via Script am Ende) */
+            --mouse-x: 50%;
+            --mouse-y: 50%;
+        }
+
+        body {
+            background-color: #0d0d0d;
+            /* Der dynamische Lichtkegel: Nutzt color-mix für HEX+Opacity */
+            background-image: radial-gradient(
+                circle at var(--mouse-x) var(--mouse-y), 
+                color-mix(in srgb, var(--spotlight-hex), transparent calc(100% - (var(--spotlight-opacity) * 100%))) 0%, 
+                #0d0d0d var(--spotlight-size)
+            );
+            color: #e0e0e0;
+            font-family: 'Inter', -apple-system, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            /* Transition für die physikalische Trägheit des Lichts hinter der Maus */
+            transition: background 0.15s ease-out;
+        }
+
+        .container {
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 4rem 6rem;
+            background: rgba(255, 255, 255, 0.03); /* Milchglas-Basis */
+            backdrop-filter: blur(15px);           /* Bricht das Licht der "Taschenlampe" */
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 2px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 1.5s ease-out;
+            z-index: 1;
+        }
+
+        h1 {
+            font-weight: 200;
+            letter-spacing: 0.7rem;
+            text-transform: uppercase;
+            margin: 0;
+            font-size: 1.8rem;
+            color: #ffffff;
+        }
+
+        .line-wrapper {
+            position: relative;
+            margin: 2.5rem auto;
+            height: 2px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .line {
+            height: 1px;
+            width: 0;
+            background-color: var(--accent-color);
+            box-shadow: 0 0 8px var(--glow-color);
+            /* Startet zeitversetzt und fährt auf --line-width aus */
+            animation: growLine var(--line-duration) forwards var(--line-delay);
+        }
+
+        /* DER FLÜCHTIGE LICHTBLITZ (Subliminaler Effekt)
+           Erscheint nur für 0.2s am Ende der Linien-Animation */
+        .sparkle {
+            position: absolute;
+            top: 50%;
+            width: 4px;
+            height: 4px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            opacity: 0;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 15px 3px #ffffff, 0 0 30px 8px var(--glow-color);
+            /* Timing: Startet genau wenn die Linie fertig ist (Delay + Duration) */
+            animation: flash 0.2s ease-out forwards calc(var(--line-delay) + var(--line-duration));
+        }
+
+        /* Positionierung der Blitze an den Enden der Linie */
+        .sparkle.left { left: calc(50% - (var(--line-width) / 2)); }
+        .sparkle.right { left: calc(50% + (var(--line-width) / 2)); }
+
+        p {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3rem;
+            color: #888;
+            margin-top: 1rem;
+        }
+
+        footer {
+            position: absolute;
+            bottom: 30px;
+            font-size: 0.65rem;
+        }
+
+        footer a {
+            color: #444;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 0.15rem;
+            transition: color 0.3s;
+        }
+
+        footer a:hover { color: var(--glow-color); }
+
+        /* KEYFRAMES: DEFINITION DER BEWEGUNGEN */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes growLine {
+            from { width: 0; }
+            to { width: var(--line-width); }
+        }
+
+        @keyframes flash {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+            20% { transform: translate(-50%, -50%) scale(4); opacity: 1; filter: brightness(2); }
+            100% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>VON BUCHWALD</h1>
+        <div class="line-wrapper">
+            <div class="line"></div>
+            <div class="sparkle left"></div>
+            <div class="sparkle right"></div>
+        </div>
+        <p>Private Domain</p>
+    </div>
+
+    <footer>
+        <a href="datenschutz.html">Datenschutz</a>
+    </footer>
+
+    <script>
+        /* MOUSE-TRACKER: 
+           Berechnet die Position des Mauszeigers relativ zum Fenster 
+           und übergibt die Werte an das CSS-Spotlight */
+        document.addEventListener('mousemove', e => {
+            const x = (e.clientX / window.innerWidth * 100).toFixed(2);
+            const y = (e.clientY / window.innerHeight * 100).toFixed(2);
+            document.documentElement.style.setProperty('--mouse-x', `${x}%`);
+            document.documentElement.style.setProperty('--mouse-y', `${y}%`);
+        });
+    </script>
+
+</body>
+</html>
