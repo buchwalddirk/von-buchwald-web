@@ -10,17 +10,17 @@
         :root {
             /* FARBEN & DESIGN - Zentral anpassbar */
             --accent-color: #a30015;        /* Dein Bordeaux HEX */
-            --glow-color: #ff4d4d;          /* Akzentfarbe f¸r Interaktion */
+            --glow-color: #ff4d4d;          /* Akzentfarbe f√ºr Interaktion */
 
             /* SPOTLIGHT (TASCHENLAMPE) 
                Simuliert das Blooming-Verhalten hochwertiger Panels */
             --spotlight-hex: #a30015;       
             --spotlight-size: 60%;          /* Weichheit des Lichtkegels */
-            --spotlight-opacity: 0.18;      /* St‰rke der Hintergrundbeleuchtung */
+            --spotlight-opacity: 0.18;      /* St√§rke der Hintergrundbeleuchtung */
 
             /* INDIREKTE BELEUCHTUNG DES HEADERS */
             --shield-glow-intensity: 25px;   /* Radius des Schattens/Leuchtens */
-            --shield-border-opacity: 0.15;   /* H‰rte der Auﬂenkante */
+            --shield-border-opacity: 0.15;   /* H√§rte der Au√üenkante */
 
             /* DYNAMISCHE PARAMETER (Steuerung via JS) */
             --mouse-x: 50%;
@@ -29,7 +29,7 @@
 
         body {
             background-color: #0d0d0d;
-            /* Spotlight-Effekt mit Tr‰gheit (Transition) */
+            /* Spotlight-Effekt mit Tr√§gheit (Transition) */
             background-image: radial-gradient(
                 circle at var(--mouse-x) var(--mouse-y), 
                 color-mix(in srgb, var(--spotlight-hex), transparent calc(100% - (var(--spotlight-opacity) * 100%))) 0%, 
@@ -44,7 +44,7 @@
             margin: 0;
             padding: 40px 20px;
             box-sizing: border-box;
-            /* 0.15s Transition f¸r das "Local Dimming" Feeling */
+            /* 0.15s Transition f√ºr das "Local Dimming" Feeling */
             transition: background 0.15s ease-out;
         }
 
@@ -61,7 +61,7 @@
             z-index: 1;
         }
 
-        /* HEADER-BOX: Das "Schild" mit indirektem Glow nach auﬂen */
+        /* HEADER-BOX: Das "Schild" mit indirektem Glow nach au√üen */
         .header-box {
             border: 1px solid rgba(163, 0, 21, var(--shield-border-opacity));
             box-shadow: 0 0 var(--shield-glow-intensity) rgba(163, 0, 21, 0.4);
@@ -98,7 +98,7 @@
             margin-bottom: 1rem;
         }
 
-        /* SPAM-SCHUTZ: E-Mail wird im HTML r¸ckw‰rts gelistet und per CSS gedreht */
+        /* SPAM-SCHUTZ: E-Mail wird im HTML r√ºckw√§rts gelistet und per CSS gedreht */
         .reverse {
             display: inline-block;
             unicode-bidi: bidi-override;
@@ -146,8 +146,10 @@
 
         <h2>Kontaktaufnahme</h2>
         <p>
-            Wenn Sie mich per E-Mail kontaktieren, werden Ihre Angaben zur Bearbeitung Ihrer Anfrage gespeichert. 
-            Diese Daten werden nicht ohne Ihre Einwilligung weitergegeben und gel&ouml;scht, sobald der Zweck der Speicherung entf&auml;llt.
+            Wenn Sie mich per E-Mail kontaktieren, werden Ihre Angaben zur Bearbeitung Ihrer Anfrage verarbeitet. 
+            Ich nutze f√ºr die Kommunikation den Dienst <strong>Google Mail (Gmail)</strong>. Bitte beachten Sie, 
+            dass die Datenverarbeitung hierbei auf Servern von Google (ggf. auch in den USA) erfolgen kann. 
+            Diese Daten werden nicht ohne Ihre Einwilligung an Dritte weitergegeben und gel√∂scht, sobald der Zweck der Speicherung entf√§llt oder Sie mich zur L√∂schung auffordern.
         </p>
 
         <h2>Cookies &amp; Tracking</h2>
