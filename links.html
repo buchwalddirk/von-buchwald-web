@@ -8,11 +8,11 @@
 
     <style>
         :root {
-            --accent-color: #a30015;        /* Dein Bordeaux HEX */
-            --glow-color: #ff4d4d;          /* Akzentfarbe für Interaktion */
+            --accent-color: #a30015;
+            --glow-color: #ff4d4d;
             --spotlight-hex: #a30015;       
-            --spotlight-size: 60%;
-            --spotlight-opacity: 0.18;
+            --spotlight-size: 65%;
+            --spotlight-opacity: 0.20;
             --mouse-x: 50%;
             --mouse-y: 50%;
         }
@@ -33,33 +33,41 @@
             margin: 0;
             padding: 20px;
             box-sizing: border-box;
-            transition: background 0.15s ease-out;
             overflow-x: hidden;
         }
 
         .link-container {
-            max-width: 450px;
+            max-width: 420px;
             width: 100%;
             text-align: center;
             z-index: 1;
-            padding: 2rem;
+            padding: 3rem 2rem;
             background: rgba(255, 255, 255, 0.02);
-            backdrop-filter: blur(15px);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 4px;
+            border-radius: 2px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            /* Sanftes Einblenden beim Laden */
+            animation: fadeInContainer 1s ease-out;
+        }
+
+        @keyframes fadeInContainer {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .header-box {
-            border-bottom: 1px solid rgba(163, 0, 21, 0.3);
+            border-bottom: 1px solid rgba(163, 0, 21, 0.4);
             padding-bottom: 1.5rem;
-            margin-bottom: 2.5rem;
+            margin-bottom: 2rem;
         }
 
         h1 {
             font-weight: 200;
-            letter-spacing: 0.5rem;
+            letter-spacing: 0.6rem;
             text-transform: uppercase;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             margin: 0;
             color: #ffffff;
         }
@@ -67,58 +75,65 @@
         .link-stack {
             display: flex;
             flex-direction: column;
-            gap: 1rem;
+            gap: 0.8rem;
         }
 
         .link-item {
             display: block;
-            padding: 1rem;
+            padding: 0.9rem;
             background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #ccc;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #bbb;
             text-decoration: none;
             text-transform: uppercase;
-            letter-spacing: 0.15rem;
-            font-size: 0.75rem;
-            transition: all 0.3s ease;
+            letter-spacing: 0.2rem;
+            font-size: 0.7rem;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
         }
 
         .link-item:hover {
             border-color: var(--accent-color);
-            background: rgba(163, 0, 21, 0.15);
+            background: rgba(163, 0, 21, 0.12);
             color: #fff;
-            box-shadow: 0 0 15px rgba(163, 0, 21, 0.4);
-            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(163, 0, 21, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Spezial-Styling für den Rückweg */
+        .link-item.main-return {
+            margin-bottom: 0.5rem;
+            border-color: rgba(255, 255, 255, 0.2);
+            color: #fff;
         }
 
         .footer-logo {
             margin-top: 2.5rem;
-            font-size: 0.6rem;
-            letter-spacing: 0.3rem;
-            color: #444;
+            font-size: 0.55rem;
+            letter-spacing: 0.4rem;
+            color: #555;
             text-transform: uppercase;
         }
 
         .disclaimer {
             font-size: 0.6rem;
-            color: #888;
+            color: #666;
             margin-top: 1.5rem;
-            line-height: 1.4;
+            line-height: 1.6;
             text-align: center;
             max-width: 90%;
             margin-left: auto;
             margin-right: auto;
+            letter-spacing: 0.05rem;
         }
 
-		a.disclaimer-link {
-            color: var(--accent-color); /* Nutzt dein Bordeaux für den Link */
+        .disclaimer-link {
+            color: var(--accent-color);
             text-decoration: none;
-            font-weight: bold;
+            transition: color 0.3s;
         }
 
-        a.disclaimer-link:hover {
+        .disclaimer-link:hover {
             color: var(--glow-color);
-            text-decoration: underline;
         }
     </style>
 </head>
@@ -130,29 +145,27 @@
         </div>
 
         <div class="link-stack">
-            <a href="index.html" class="link-item">Hauptseite</a>
+            <a href="index.html" class="link-item main-return">← HAUPTSEITE</a>
 
-            <a href="https://www.youtube.com/c/DirkvonBuchwald/featured" target="_blank" class="link-item">YouTube Kanal</a>
+            <a href="https://www.youtube.com/c/DirkvonBuchwald/featured" target="_blank" class="link-item">YouTube</a>
             <a href="https://www.instagram.com/derdirk84/" target="_blank" class="link-item">Instagram</a>
-
-            <a href="https://open.spotify.com/user/derdirk84" target="_blank" class="link-item">Spotify Profil</a>
-			<a href="https://www.exophase.com/user/DerDirk84/" target="_blank" class="link-item">Exophase Profil</a>
-
-            <a href="https://github.com/buchwalddirk" target="_blank" class="link-item">GitHub Projekte</a>
-            <a href="datenschutz.html" class="link-item">Datenschutz</a>
+            <a href="https://open.spotify.com/user/derdirk84" target="_blank" class="link-item">Spotify</a>
+            <a href="https://www.exophase.com/user/DerDirk84/" target="_blank" class="link-item">Exophase</a>
+            <a href="https://github.com/buchwalddirk" target="_blank" class="link-item">GitHub</a>
+            
+            <a href="datenschutz.html" class="link-item" style="margin-top: 0.5rem; opacity: 0.7;">Datenschutz</a>
         </div>
 
         <div class="footer-logo">Est. 2026</div>
 
-		<p class="disclaimer">
-    		<strong>Hinweis:</strong> Externe Links f&uuml;hren zu Drittanbietern. 
-    		Dabei werden Daten durch die jeweiligen Betreiber verarbeitet, worauf ich keinen Einfluss habe. 
-    		Es gelten deren jeweilige <a href="datenschutz.html" class="disclaimer-link">Datenschutzbestimmungen</a>.
-		</p>
+        <p class="disclaimer">
+            <strong>Hinweis:</strong> Externe Links führen zu Drittanbietern. 
+            Dabei werden Daten verarbeitet, worauf ich keinen Einfluss habe. 
+            Es gelten deren <a href="datenschutz.html" class="disclaimer-link">Bestimmungen</a>.
+        </p>
     </div>
 
     <script>
-        /* MOUSE-TRACKER */
         document.addEventListener('mousemove', e => {
             const x = (e.clientX / window.innerWidth * 100).toFixed(2);
             const y = (e.clientY / window.innerHeight * 100).toFixed(2);
