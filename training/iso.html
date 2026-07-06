@@ -2,40 +2,60 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Static Strength Tracker</title>
     <style>
-        body { font-family: sans-serif; background: #121212; color: #e0e0e0; padding: 20px; }
-        .exercise-card { background: #1e1e1e; padding: 15px; margin-bottom: 10px; border-radius: 8px; }
-        .instructions { font-size: 0.8em; color: #aaa; margin: 10px 0; font-style: italic; }
-        button { padding: 10px 20px; cursor: pointer; border: none; border-radius: 4px; font-weight: bold; margin-top: 5px; }
+        body { font-family: sans-serif; background: #121212; color: #e0e0e0; padding: 15px; margin: 0; }
+        .exercise-card { background: #1e1e1e; padding: 20px; margin-bottom: 15px; border-radius: 12px; border: 1px solid #333; }
+        h3 { margin-top: 0; font-size: 1.4em; }
+        .instructions { font-size: 1em; color: #aaa; margin: 10px 0; font-style: italic; line-height: 1.4; }
+        
+        /* Große, Smartphone-freundliche Buttons */
+        button { 
+            width: 100%; 
+            padding: 18px; 
+            margin: 8px 0; 
+            cursor: pointer; 
+            border: none; 
+            border-radius: 8px; 
+            font-size: 1.2em; 
+            font-weight: bold; 
+        }
         .start { background: #4caf50; color: white; }
         .stop { background: #f44336; color: white; }
         .pause { background: #2196f3; color: white; }
-        .timer-display { font-size: 1.5em; font-weight: bold; color: #ffeb3b; }
-        .stats { margin-top: 10px; font-size: 0.9em; color: #888; }
-        #pause-zone { position: sticky; top: 0; background: #333; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; }
+        
+        .timer-display { font-size: 2.5em; font-weight: bold; color: #ffeb3b; margin: 10px 0; text-align: center; }
+        .stats { margin-top: 15px; font-size: 1em; color: #888; text-align: center; }
+        
+        #pause-zone { position: sticky; top: 0; background: #252525; padding: 15px; border-radius: 12px; margin-bottom: 20px; text-align: center; border: 2px solid #2196f3; }
     </style>
 </head>
 <body>
 
     <div id="pause-zone">
-        <h3>Pausentimer</h3>
-        <div id="pause-display" style="font-size: 2em;">--</div>
-        <button class="pause" onclick="startPause(90)">90s Pause</button>
+        <h3 style="margin-bottom: 5px;">Pausentimer</h3>
+        <div id="pause-display" style="font-size: 3em; font-weight: bold;">--</div>
+        <button class="pause" onclick="startPause(90)">90s Pause starten</button>
     </div>
 
     <div id="container"></div>
 
+    <div style="margin-top: 40px; text-align: center;">
+        <h3>Übersicht</h3>
+        <img src="./uebungen.png" alt="Übungen Übersicht" style="max-width: 100%; height: auto; border-radius: 8px;">
+    </div>
+
     <script>
-      const exercises = [
-        { name: 'Wallsit', desc: 'Rücken an die Wand, Knie im 90°-Winkel, Oberschenkel parallel zum Boden.' },
-        { name: 'Brust-Press', desc: 'Hände vor der Brust fest zusammendrücken, Schulterblätter aktiv nach hinten unten ziehen.' },
-        { name: 'Rücken-Zug', desc: 'Hände ineinander haken, Arme gebeugt und kräftig auseinanderziehen.' },
-        { name: 'Plank', desc: 'Unterarmstütz, Körper wie ein Brett. Bauch einziehen und Gesäß fest anspannen.' },
-        { name: 'Hollow Hold', desc: 'Auf dem Rücken, Beine und Schultern leicht anheben, unterer Rücken bleibt am Boden.' },
-        { name: 'Bird-Dog', desc: 'Vierfüßlerstand, rechter Arm & linkes Bein gleichzeitig strecken. Rücken kerzengerade halten.' },
-        { name: 'Reverse Plank', desc: 'Hände hinter dir, Körper anheben bis zur geraden Linie. Gesäß extrem fest anspannen.' }
-      ];
+        const exercises = [
+            { name: 'Wallsit', desc: 'Rücken an die Wand, Knie 90°, Oberschenkel parallel zum Boden.' },
+            { name: 'Brust-Press', desc: 'Hände fest zusammendrücken, Schulterblätter nach hinten unten ziehen.' },
+            { name: 'Rücken-Zug', desc: 'Hände ineinander haken, Arme gebeugt kräftig auseinanderziehen.' },
+            { name: 'Plank', desc: 'Unterarmstütz, Körper wie ein Brett. Bauch einziehen, Gesäß fest.' },
+            { name: 'Hollow Hold', desc: 'Rücken am Boden, Beine/Schultern leicht anheben, Bauchspannung.' },
+            { name: 'Bird-Dog', desc: 'Vierfüßler, diagonale Streckung. Rücken bleibt kerzengerade.' },
+            { name: 'Reverse Plank', desc: 'Stütz hinten, Körper gerade Linie. Gesäß extrem fest anspannen.' }
+        ];
 
         let intervals = {};
         let pauseInterval;
@@ -84,22 +104,18 @@
             clearInterval(pauseInterval);
             let display = document.getElementById('pause-display');
             let timer = seconds;
+            display.innerText = timer + 's';
             pauseInterval = setInterval(() => {
+                timer--;
                 display.innerText = timer + 's';
-                if (--timer < 0) {
+                if (timer <= 0) {
                     clearInterval(pauseInterval);
                     display.innerText = "Los!";
-                    new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=').play(); // Kurzer Ton
                 }
             }, 1000);
         }
 
         createUI();
     </script>
-    
-    <div style="margin-top: 40px; text-align: center;">
-        <h3>Übersicht</h3>
-        <img src="uebungen.png" alt="Übungen Übersicht" style="max-width: 100%; height: auto; border-radius: 8px;">
-    </div>
 </body>
 </html>
