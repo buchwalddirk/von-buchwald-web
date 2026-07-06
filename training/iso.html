@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Static Strength Tracker</title>
+    <style>
+        body { font-family: sans-serif; background: #121212; color: #e0e0e0; padding: 20px; }
+        .exercise-card { background: #1e1e1e; padding: 15px; margin-bottom: 10px; border-radius: 8px; }
+        .instructions { font-size: 0.8em; color: #aaa; margin: 10px 0; font-style: italic; }
+        button { padding: 10px 20px; cursor: pointer; border: none; border-radius: 4px; font-weight: bold; margin-top: 5px; }
+        .start { background: #4caf50; color: white; }
+        .stop { background: #f44336; color: white; }
+        .pause { background: #2196f3; color: white; }
+        .timer-display { font-size: 1.5em; font-weight: bold; color: #ffeb3b; }
+        .stats { margin-top: 10px; font-size: 0.9em; color: #888; }
+        #pause-zone { position: sticky; top: 0; background: #333; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <div id="pause-zone">
+        <h3>Pausentimer</h3>
+        <div id="pause-display" style="font-size: 2em;">--</div>
+        <button class="pause" onclick="startPause(90)">90s Pause</button>
+    </div>
+
+    <div id="container"></div>
+
+    <script>
+      const exercises = [
+        { name: 'Wallsit', desc: 'Rücken an die Wand, Knie im 90°-Winkel, Oberschenkel parallel zum Boden.' },
+        { name: 'Brust-Press', desc: 'Hände vor der Brust fest zusammendrücken, Schulterblätter aktiv nach hinten unten ziehen.' },
+        { name: 'Rücken-Zug', desc: 'Hände ineinander haken, Arme gebeugt und kräftig auseinanderziehen.' },
+        { name: 'Plank', desc: 'Unterarmstütz, Körper wie ein Brett. Bauch einziehen und Gesäß fest anspannen.' },
+        { name: 'Hollow Hold', desc: 'Auf dem Rücken, Beine und Schultern leicht anheben, unterer Rücken bleibt am Boden.' },
+        { name: 'Bird-Dog', desc: 'Vierfüßlerstand, rechter Arm & linkes Bein gleichzeitig strecken. Rücken kerzengerade halten.' },
+        { name: 'Reverse Plank', desc: 'Hände hinter dir, Körper anheben bis zur geraden Linie. Gesäß extrem fest anspannen.' }
+      ];
+
+        let intervals = {};
+        let pauseInterval;
+
+        function createUI() {
+            const container = document.getElementById('container');
+            exercises.forEach(ex => {
+                const card = document.createElement('div');
+                card.className = 'exercise-card';
+                card.innerHTML = `
+                    <h3>${ex.name}</h3>
+                    <div class="instructions">${ex.desc}</div>
+                    <div class="timer-display" id="timer-${ex.name}">0s</div>
+                    <button class="start" onclick="startTimer('${ex.name}')">Start</button>
+                    <button class="stop" onclick="stopTimer('${ex.name}')">Stop</button>
+                    <div class="stats" id="stats-${ex.name}">Bestwert: ${localStorage.getItem(ex.name) || 0}s</div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function startTimer(name) {
+            if (intervals[name]) return; 
+            let start = Date.now();
+            intervals[name] = setInterval(() => {
+                let diff = Math.floor((Date.now() - start) / 1000);
+                document.getElementById(`timer-${name}`).innerText = diff + 's';
+            }, 1000);
+        }
+
+        function stopTimer(name) {
+            clearInterval(intervals[name]);
+            intervals[name] = null;
+            const duration = parseInt(document.getElementById(`timer-${name}`).innerText);
+            const best = parseInt(localStorage.getItem(name) || 0);
+
+            if (duration > best) {
+                localStorage.setItem(name, duration);
+                document.getElementById(`stats-${name}`).innerText = `Bestwert: ${duration}s (Neuer Rekord!)`;
+            }
+            alert(`${name} beendet: ${duration} Sekunden.`);
+            document.getElementById(`timer-${name}`).innerText = "0s";
+        }
+
+        function startPause(seconds) {
+            clearInterval(pauseInterval);
+            let display = document.getElementById('pause-display');
+            let timer = seconds;
+            pauseInterval = setInterval(() => {
+                display.innerText = timer + 's';
+                if (--timer < 0) {
+                    clearInterval(pauseInterval);
+                    display.innerText = "Los!";
+                    new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=').play(); // Kurzer Ton
+                }
+            }, 1000);
+        }
+
+        createUI();
+    </script>
+</body>
+</html>
