@@ -1,33 +1,38 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Static Strength Tracker</title>
-<style>
-body{font-family:sans-serif;background:#121212;color:#e0e0e0;padding:15px;margin:0}
-.exercise-card{background:#1e1e1e;padding:20px;margin-bottom:15px;border-radius:12px;border:1px solid #333}
-h3{margin-top:0}.instructions{color:#aaa;font-style:italic}
-button{width:100%;padding:16px;margin:8px 0;border:0;border-radius:8px;font-size:1.1em;font-weight:bold;cursor:pointer}
-.start{background:#4caf50;color:#fff}.stop{background:#f44336;color:#fff}.pause{background:#2196f3;color:#fff}
-.timer-display{font-size:2.4em;font-weight:bold;color:#ffeb3b;text-align:center;margin:10px 0}
-.stats{text-align:center;color:#bbb;line-height:1.5}
-#pause-zone{position:sticky;top:0;background:#252525;padding:15px;border-radius:12px;margin-bottom:20px;border:2px solid #2196f3}
-#toast{position:fixed;left:50%;bottom:-120px;transform:translateX(-50%);background:#333;color:#fff;padding:14px 20px;border-radius:10px;transition:.3s;z-index:99}
-#toast.show{bottom:20px}
-#reset{background:#ff9800;color:#fff}
-</style></head><body>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <title>Static Strength Tracker</title>
+        <style>
+                body{font-family:sans-serif;background:#121212;color:#e0e0e0;padding:15px;margin:0}
+                .exercise-card{background:#1e1e1e;padding:20px;margin-bottom:15px;border-radius:12px;border:1px solid #333}
+                h3{margin-top:0}.instructions{color:#aaa;font-style:italic}
+                button{width:100%;padding:16px;margin:8px 0;border:0;border-radius:8px;font-size:1.1em;font-weight:bold;cursor:pointer}
+                .start{background:#4caf50;color:#fff}.stop{background:#f44336;color:#fff}.pause{background:#2196f3;color:#fff}
+                .timer-display{font-size:2.4em;font-weight:bold;color:#ffeb3b;text-align:center;margin:10px 0}
+                .stats{text-align:center;color:#bbb;line-height:1.5}
+                #pause-zone{position:sticky;top:0;background:#252525;padding:15px;border-radius:12px;margin-bottom:20px;border:2px solid #2196f3}
+                #toast{position:fixed;left:50%;bottom:-120px;transform:translateX(-50%);background:#333;color:#fff;padding:14px 20px;border-radius:10px;transition:.3s;z-index:99}
+                #toast.show{bottom:20px}
+                #reset{background:#ff9800;color:#fff}
+        </style>
+</head>
+<body>
+
 <div id="pause-zone">
-<h3>Pausentimer</h3>
-<div id="pause-display" style="font-size:3em;font-weight:bold">--</div>
-<button class="pause" onclick="startPause(30)">30s Pause starten</button>
-<button id="reset" onclick="resetData()">🗑 Daten zurücksetzen</button>
+        <h3>Pausentimer</h3>
+        <div id="pause-display" style="font-size:3em;font-weight:bold">--</div>
+        <button class="pause" onclick="startPause(30)">30s Pause starten</button>
+        <button id="reset" onclick="resetData()">🗑 Daten zurücksetzen</button>
 </div>
+
 <div id="container"></div>
 <div style="margin-top:40px;text-align:center">
-<h3>Übersicht</h3>
-<img src="./uebungen.png" style="max-width:100%;border-radius:8px">
+        <h3>Übersicht</h3>
+        <img src="./uebungen.png" style="max-width:100%;border-radius:8px">
 </div>
+
 <div id="toast"></div>
 <script>
         const exercises = [
@@ -39,52 +44,57 @@ button{width:100%;padding:16px;margin:8px 0;border:0;border-radius:8px;font-size
             { name: 'Bird-Dog', desc: 'Vierfüßler, diagonale Streckung. Rücken bleibt kerzengerade.' },
             { name: 'Reverse Plank', desc: 'Stütz hinten, Körper gerade Linie. Gesäß extrem fest anspannen.' }
         ];
-let intervals={},pauseInterval,resetArmed=false;
-function historyKey(n){return n+"_history";}
-function getHistory(n){return JSON.parse(localStorage.getItem(historyKey(n))||"[]")}
-function saveResult(n,s){let h=getHistory(n);h.push(s);if(h.length>10)h.shift();localStorage.setItem(historyKey(n),JSON.stringify(h));}
-function avg(a){return a.length?(a.reduce((x,y)=>x+y,0)/a.length).toFixed(1):0;}
-function updateStats(n){
- let h=getHistory(n),best=Math.max(0,...h),last=h.at(-1)||0;
- document.getElementById("stats-"+n).innerHTML=`🏆 Best: ${best}s<br>📈 Ø letzte 10: ${avg(h)}s<br>🔥 Letzter: ${last}s`;
-}
-function toast(msg){let t=document.getElementById("toast");t.innerHTML=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2500);}
-function createUI(){
-let c=document.getElementById("container");
-exercises.forEach(ex=>{
-let d=document.createElement("div");d.className="exercise-card";
-d.innerHTML=`<h3>${ex.name}</h3><div class="instructions">${ex.desc}</div>
-<div class="timer-display" id="timer-${ex.name}">0s</div>
-<button class="start" onclick="startTimer('${ex.name}')">Start</button>
-<button class="stop" onclick="stopTimer('${ex.name}')">Stop</button>
-<div class="stats" id="stats-${ex.name}"></div>`;
-c.appendChild(d);updateStats(ex.name);
-});
-}
-function startTimer(n){
-if(intervals[n])return;
-const start=performance.now();
-intervals[n]=setInterval(()=>{document.getElementById("timer-"+n).innerText=Math.floor((performance.now()-start)/1000)+"s";},200);
-}
-function stopTimer(n){
-if(!intervals[n])return;
-clearInterval(intervals[n]);intervals[n]=null;
-let d=parseInt(document.getElementById("timer-"+n).innerText);
-saveResult(n,d);updateStats(n);
-let best=Math.max(...getHistory(n));
-toast(`✅ <b>${n}</b><br>${d}s${d>=best?"<br>🏆 Neuer Rekord!":""}`);
-document.getElementById("timer-"+n).innerText="0s";
-}
-function startPause(s){
-clearInterval(pauseInterval);let t=s,p=document.getElementById("pause-display");p.innerText=t+"s";
-pauseInterval=setInterval(()=>{t--;p.innerText=t>0?t+"s":"Los!";if(t<=0)clearInterval(pauseInterval);},1000);
-}
-function resetData(){
-const b=document.getElementById("reset");
-if(!resetArmed){resetArmed=true;b.textContent="⚠ Nochmal drücken";setTimeout(()=>{resetArmed=false;b.textContent="🗑 Daten zurücksetzen";},3000);return;}
-exercises.forEach(e=>localStorage.removeItem(historyKey(e.name)));
-document.querySelectorAll(".stats").forEach((_,i)=>updateStats(exercises[i].name));
-resetArmed=false;b.textContent="🗑 Daten zurücksetzen";toast("🗑 Daten gelöscht");
-}
-createUI();
+        let intervals={},pauseInterval,resetArmed=false;
+        function historyKey(n){return n+"_history";}
+        function getHistory(n){return JSON.parse(localStorage.getItem(historyKey(n))||"[]")}
+        function saveResult(n,s){let h=getHistory(n);h.push(s);if(h.length>10)h.shift();localStorage.setItem(historyKey(n),JSON.stringify(h));}
+        function avg(a){return a.length?(a.reduce((x,y)=>x+y,0)/a.length).toFixed(1):0;}
+        function updateStats(n){
+                let h=getHistory(n),best=Math.max(0,...h),last=h.at(-1)||0;
+                document.getElementById("stats-"+n).innerHTML=`🏆 Best: ${best}s<br>📈 Ø letzte 10: ${avg(h)}s<br>🔥 Letzter: ${last}s`;
+        }
+        function toast(msg){let t=document.getElementById("toast");t.innerHTML=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2500);}
+        function createUI(){
+                let c=document.getElementById("container");
+                exercises.forEach(ex=>{
+                        let d=document.createElement("div");d.className="exercise-card";
+                        d.innerHTML=`<h3>${ex.name}</h3><div class="instructions">${ex.desc}</div>
+                        <div class="timer-display" id="timer-${ex.name}">0s</div>
+                        <button class="start" onclick="startTimer('${ex.name}')">Start</button>
+                        <button class="stop" onclick="stopTimer('${ex.name}')">Stop</button>
+                        <div class="stats" id="stats-${ex.name}"></div>`;
+                        c.appendChild(d);updateStats(ex.name);
+                });
+        }
+        
+        function startTimer(n){
+                if(intervals[n])return;
+                const start=performance.now();
+                intervals[n]=setInterval(()=>{document.getElementById("timer-"+n).innerText=Math.floor((performance.now()-start)/1000)+"s";},200);
+        }
+        
+        function stopTimer(n){
+                if(!intervals[n])return;
+                clearInterval(intervals[n]);intervals[n]=null;
+                let d=parseInt(document.getElementById("timer-"+n).innerText);
+                saveResult(n,d);updateStats(n);
+                let best=Math.max(...getHistory(n));
+                toast(`✅ <b>${n}</b><br>${d}s${d>=best?"<br>🏆 Neuer Rekord!":""}`);
+                document.getElementById("timer-"+n).innerText="0s";
+        }
+        
+        function startPause(s){
+                clearInterval(pauseInterval);let t=s,p=document.getElementById("pause-display");p.innerText=t+"s";
+                pauseInterval=setInterval(()=>{t--;p.innerText=t>0?t+"s":"Los!";if(t<=0)clearInterval(pauseInterval);},1000);
+        }
+
+        function resetData(){
+                const b=document.getElementById("reset");
+                if(!resetArmed){resetArmed=true;b.textContent="⚠ Nochmal drücken";setTimeout(()=>{resetArmed=false;b.textContent="🗑 Daten zurücksetzen";},3000);return;}
+                exercises.forEach(e=>localStorage.removeItem(historyKey(e.name)));
+                document.querySelectorAll(".stats").forEach((_,i)=>updateStats(exercises[i].name));
+                resetArmed=false;b.textContent="🗑 Daten zurücksetzen";toast("🗑 Daten gelöscht");
+        }
+        
+        createUI();
 </script></body></html>
