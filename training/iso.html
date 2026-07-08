@@ -12,12 +12,11 @@
         .start{background:#4caf50;color:#fff}.stop{background:#f44336;color:#fff}.pause{background:#2196f3;color:#fff}
         .timer-display{font-size:2.4em;font-weight:bold;color:#ffeb3b;text-align:center;margin:10px 0}
         
-        /* Fortschrittsbalken */
         .progress-bar-bg{width:100%;height:10px;background:#333;border-radius:5px;margin:10px 0;overflow:hidden}
         .progress-bar-fill{height:100%;width:0%;background:#ffeb3b;transition:width 0.2s}
         
-        .stats{text-align:center;color:#bbb;line-height:1.5}
-        #pause-zone{position:sticky;top:0;background:#252525;padding:15px;border-radius:12px;margin-bottom:20px;border:2px solid #2196f3}
+        .stats{text-align:center;color:#bbb;font-size:0.95em;margin-top:10px;padding:10px;background:#252525;border-radius:8px}
+        #pause-zone{position:sticky;top:0;background:#252525;padding:15px;border-radius:12px;margin-bottom:20px;border:2px solid #2196f3;z-index:10}
         #toast{position:fixed;left:50%;bottom:-120px;transform:translateX(-50%);background:#333;color:#fff;padding:14px 20px;border-radius:10px;transition:.3s;z-index:99}
         #toast.show{bottom:20px}
         #reset{background:#ff9800;color:#fff}
@@ -27,7 +26,7 @@
 
 <div id="pause-zone">
     <h3>Pausentimer</h3>
-    <div id="pause-display" style="font-size:3em;font-weight:bold">--</div>
+    <div id="pause-display" style="font-size:3em;font-weight:bold;text-align:center;">--</div>
     <button class="pause" onclick="startPause(30)">30s Pause starten</button>
     <button id="reset" onclick="resetData()">🗑 Daten zurücksetzen</button>
 </div>
@@ -36,7 +35,7 @@
 
 <div style="margin-top:40px;text-align:center">
     <h3>Übersicht</h3>
-    <img src="./uebungen.png" style="max-width:100%;border-radius:8px">
+    <img src="./uebungen.png" style="max-width:100%;border-radius:8px" alt="Übungen">
 </div>
 
 <div id="toast"></div>
@@ -54,31 +53,19 @@
 
     let intervals={}, pauseInterval, resetArmed=false;
 
-    function historyKey(n){
-        return n+"_history";
-    }
-    function getHistory(n){
-        return JSON.parse(localStorage.getItem(historyKey(n))||"[]")
-    }
-    function saveResult(n,s){
-        let h=getHistory(n);
-        h.push(s);
-        if(h.length>10)h.shift();
-        localStorage.setItem(historyKey(n),JSON.stringify(h));
-    }
-    function avg(a){
-        return a.length?(a.reduce((x,y)=>x+y,0)/a.length).toFixed(1):0;
-    }
+    function historyKey(n){return n+"_history";}
+    function getHistory(n){return JSON.parse(localStorage.getItem(historyKey(n))||"[]")}
+    function saveResult(n,s){let h=getHistory(n);h.push(s);if(h.length>10)h.shift();localStorage.setItem(historyKey(n),JSON.stringify(h));}
+    function avg(a){return a.length?(a.reduce((x,y)=>x+y,0)/a.length).toFixed(0):0;}
 
-    function updateStats(n){
-        let h=getHistory(n),best=Math.max(0,...h),last=h.at(-1)||0;
-        document.getElementById("stats-"+n).innerHTML=`🏆 Best: ${best}s | Ø: ${avg(h)}s`;
+    function updateStats(n, target){
+        let h=getHistory(n), best=Math.max(0,...h);
+        document.getElementById("stats-"+n).innerHTML=`🏆 ${best} &nbsp; 📈 ${avg(h)} &nbsp; 🎯 ${target}`;
     }
 
     function toast(msg){
         let t=document.getElementById("toast");
-        t.innerHTML=msg;
-        t.classList.add("show");
+        t.innerHTML=msg;t.classList.add("show");
         setTimeout(()=>t.classList.remove("show"),2500);
     }
 
@@ -86,13 +73,13 @@
         let c=document.getElementById("container");
         exercises.forEach(ex=>{
             let d=document.createElement("div");d.className="exercise-card";
-            d.innerHTML=`<h3>${ex.name}</h3><div class="instructions">${ex.desc} (Ziel: ${ex.target}s)</div>
+            d.innerHTML=`<h3>${ex.name}</h3><div class="instructions">${ex.desc}</div>
             <div class="timer-display" id="timer-${ex.name}">0s</div>
             <div class="progress-bar-bg"><div class="progress-bar-fill" id="bar-${ex.name}"></div></div>
             <button class="start" onclick="startTimer('${ex.name}', ${ex.target})">Start</button>
-            <button class="stop" onclick="stopTimer('${ex.name}')">Stop</button>
+            <button class="stop" onclick="stopTimer('${ex.name}', ${ex.target})">Stop</button>
             <div class="stats" id="stats-${ex.name}"></div>`;
-            c.appendChild(d); updateStats(ex.name);
+            c.appendChild(d); updateStats(ex.name, ex.target);
         });
     }
 
@@ -103,7 +90,6 @@
             let elapsed=Math.floor((performance.now()-start)/1000);
             document.getElementById("timer-"+n).innerText=elapsed+"s";
             
-            // Fortschrittsbalken Logik
             let percent = Math.min((elapsed / target) * 100, 100);
             let bar = document.getElementById("bar-"+n);
             bar.style.width = percent + "%";
@@ -111,18 +97,16 @@
         }, 200);
     }
 
-    function stopTimer(n){
+    function stopTimer(n, target){
         if(!intervals[n]) return;
         clearInterval(intervals[n]); intervals[n]=null;
         let d=parseInt(document.getElementById("timer-"+n).innerText);
-        saveResult(n,d); updateStats(n);
+        saveResult(n,d); updateStats(n, target);
+        
         let best=Math.max(...getHistory(n));
-        toast(`✅ <b>${n}</b><br>${d}s${d>=best?"<br>🏆 Neuer Rekord!":""}`);
-        document.getElementById("timer-"+n).innerText="0s";
-        document.getElementById("bar-"+n).style.width = "0%";
+        toast(`✅ <b>${n}</b><br>${d}s ${d>=best?"<br>🏆 Neuer Rekord!":""}`);
     }
 
-    // ... (restliche Funktionen wie startPause und resetData bleiben gleich)
     function startPause(s){
         clearInterval(pauseInterval);let t=s,p=document.getElementById("pause-display");p.innerText=t+"s";
         pauseInterval=setInterval(()=>{t--;p.innerText=t>0?t+"s":"Los!";if(t<=0)clearInterval(pauseInterval);},1000);
@@ -130,14 +114,10 @@
 
     function resetData(){
         const b=document.getElementById("reset");
-        if(!resetArmed){
-            resetArmed=true;
-            b.textContent="⚠ Nochmal drücken";
-            setTimeout(()=>{resetArmed=false;b.textContent="🗑 Daten zurücksetzen";},3000);
-            return;
-        }
+        if(!resetArmed){resetArmed=true;b.textContent="⚠ Nochmal drücken";setTimeout(()=>{resetArmed=false;b.textContent="🗑 Daten zurücksetzen";},3000);return;}
         exercises.forEach(e=>localStorage.removeItem(historyKey(e.name)));
-        document.querySelectorAll(".stats").forEach((_,i)=>updateStats(exercises[i].name));
+        exercises.forEach(e=>document.getElementById("bar-"+e.name).style.width="0%");
+        exercises.forEach(e=>updateStats(e.name, e.target));
         resetArmed=false;b.textContent="🗑 Daten zurücksetzen";toast("🗑 Daten gelöscht");
     }
 
