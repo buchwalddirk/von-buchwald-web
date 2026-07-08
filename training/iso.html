@@ -41,8 +41,8 @@
 <script>
     const exercises = [
         { name: 'Wallsit', desc: 'Rücken flach an die Wand. Knie ca. 90°, Füße schulterbreit. Bauch und Gesäß anspannen, ruhig weiteratmen.', target: 75 },
-        { name: 'Brust-Press', desc: 'Handflächen vor der Brust kräftig gegeneinander drücken. Schultern tief halten, Brust aufrichten.', target: 60 },
-        { name: 'Rücken-Zug', desc: 'Hände ineinander haken und kräftig auseinanderziehen. Schulterblätter nach hinten unten.', target: 60 },
+        { name: 'Brust-Press', desc: 'Handflächen vor der Brust kräftig gegeneinander drücken. Schultern tief halten, Brust aufrichten.', target: 30 },
+        { name: 'Rücken-Zug', desc: 'Hände ineinander haken und kräftig auseinanderziehen. Schulterblätter nach hinten unten.', target: 30 },
         { name: 'Plank', desc: 'Unterarmstütz. Gerade Linie von Kopf bis Ferse. Bauch und Gesäß fest.', target: 90 },
         { name: 'Hollow Hold', desc: 'Lendenwirbelsäule in den Boden drücken. Beine und Schultern leicht anheben.', target: 45 },
         { name: 'Bird-Dog - Links', desc: 'Im Vierfüßler diagonal linke Hand + rechtes Bein strecken.', target: 60 },
@@ -51,6 +51,29 @@
     ];
 
     let timers = {}, pauseInterval, resetArmed = false;
+    let audioContext;
+
+    function initAudio() {
+        if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+
+    function beep(frequency = 800, duration = 80, volume = 0.3) {
+        initAudio();
+        const oscillator = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+        gain.gain.value = volume;
+        
+        oscillator.connect(gain);
+        gain.connect(audioContext.destination);
+        
+        oscillator.start();
+        setTimeout(() => {
+            oscillator.stop();
+        }, duration);
+    }
 
     function historyKey(n) { return n + "_history"; }
     function targetKey(n) { return n + "_target"; }
@@ -115,19 +138,28 @@
     function startTimer(n) {
         if (timers[n]) return;
         const startTime = Date.now();
-        timers[n] = { start: startTime, interval: null };
+        timers[n] = { start: startTime, interval: null, lastBeep: -1 };
 
         timers[n].interval = setInterval(() => {
             const elapsed = Math.floor((Date.now() - startTime) / 1000);
             const target = getTarget(n);
-            
+            const remaining = target - elapsed;
+
             document.getElementById("timer-" + n).innerText = elapsed + "s";
             
             let percent = Math.min((elapsed / target) * 100, 100);
             let bar = document.getElementById("bar-" + n);
             bar.style.width = percent + "%";
             bar.style.backgroundColor = (elapsed >= target) ? "#4caf50" : "#ffeb3b";
-        }, 300);
+
+            // Pieper in den letzten 5 Sekunden
+            if (remaining > 0 && remaining <= 5 && remaining !== timers[n].lastBeep) {
+                timers[n].lastBeep = remaining;
+                const volume = remaining === 1 ? 0.6 : 0.4;
+                const freq = remaining === 1 ? 1200 : 900;
+                beep(freq, 120, volume);
+            }
+        }, 200);
     }
 
     function stopTimer(n) {
