@@ -54,17 +54,33 @@
 
     let intervals={}, pauseInterval, resetArmed=false;
 
-    function historyKey(n){return n+"_history";}
-    function getHistory(n){return JSON.parse(localStorage.getItem(historyKey(n))||"[]")}
-    function saveResult(n,s){let h=getHistory(n);h.push(s);if(h.length>10)h.shift();localStorage.setItem(historyKey(n),JSON.stringify(h));}
-    function avg(a){return a.length?(a.reduce((x,y)=>x+y,0)/a.length).toFixed(1):0;}
+    function historyKey(n){
+        return n+"_history";
+    }
+    function getHistory(n){
+        return JSON.parse(localStorage.getItem(historyKey(n))||"[]")
+    }
+    function saveResult(n,s){
+        let h=getHistory(n);
+        h.push(s);
+        if(h.length>10)h.shift();
+        localStorage.setItem(historyKey(n),JSON.stringify(h));
+    }
+    function avg(a){
+        return a.length?(a.reduce((x,y)=>x+y,0)/a.length).toFixed(1):0;
+    }
 
     function updateStats(n){
         let h=getHistory(n),best=Math.max(0,...h),last=h.at(-1)||0;
         document.getElementById("stats-"+n).innerHTML=`🏆 Best: ${best}s | Ø: ${avg(h)}s`;
     }
 
-    function toast(msg){let t=document.getElementById("toast");t.innerHTML=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2500);}
+    function toast(msg){
+        let t=document.getElementById("toast");
+        t.innerHTML=msg;
+        t.classList.add("show");
+        setTimeout(()=>t.classList.remove("show"),2500);
+    }
 
     function createUI(){
         let c=document.getElementById("container");
@@ -114,7 +130,12 @@
 
     function resetData(){
         const b=document.getElementById("reset");
-        if(!resetArmed){resetArmed=true;b.textContent="⚠ Nochmal drücken";setTimeout(()=>{resetArmed=false;b.textContent="🗑 Daten zurücksetzen";},3000);return;}
+        if(!resetArmed){
+            resetArmed=true;
+            b.textContent="⚠ Nochmal drücken";
+            setTimeout(()=>{resetArmed=false;b.textContent="🗑 Daten zurücksetzen";},3000);
+            return;
+        }
         exercises.forEach(e=>localStorage.removeItem(historyKey(e.name)));
         document.querySelectorAll(".stats").forEach((_,i)=>updateStats(exercises[i].name));
         resetArmed=false;b.textContent="🗑 Daten zurücksetzen";toast("🗑 Daten gelöscht");
