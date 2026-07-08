@@ -26,7 +26,7 @@
     <h3>Pausentimer (Minimum)</h3>
     <div id="pause-display" style="font-size:3.2em;font-weight:bold;text-align:center;">--</div>
     <button class="pause" onclick="startPause(30)">30s Pause starten</button>
-    <button class="reset" onclick="resetData()">🗑 Daten zurücksetzen</button>
+    <button class="reset" onclick="resetTimer()">🗑 Daten zurücksetzen</button>
 </div>
 
 <div id="container"></div>
@@ -57,22 +57,24 @@
         if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
     }
 
-    function beep(frequency = 800, duration = 80, volume = 0.3) {
+    function beep(freq = 800, duration = 100, volume = 0.4) {
         initAudio();
-        const oscillator = audioContext.createOscillator();
+        const osc = audioContext.createOscillator();
         const gain = audioContext.createGain();
-        
-        oscillator.type = 'sine';
-        oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, audioContext.currentTime);
         gain.gain.value = volume;
-        
-        oscillator.connect(gain);
+        osc.connect(gain);
         gain.connect(audioContext.destination);
-        
-        oscillator.start();
-        setTimeout(() => {
-            oscillator.stop();
-        }, duration);
+        osc.start();
+        setTimeout(() => osc.stop(), duration);
+    }
+
+    function endSignal() {
+        // Deutlicher Doppelton am Ende
+        setTimeout(() => beep(900, 150, 0.5), 0);
+        setTimeout(() => beep(1200, 200, 0.6), 180);
+        setTimeout(() => beep(1400, 300, 0.5), 450);
     }
 
     function historyKey(n) { return n + "_history"; }
@@ -138,7 +140,7 @@
     function startTimer(n) {
         if (timers[n]) return;
         const startTime = Date.now();
-        timers[n] = { start: startTime, interval: null, lastBeep: -1 };
+        timers[n] = { start: startTime, interval: null, lastBeep: -1, ended: false };
 
         timers[n].interval = setInterval(() => {
             const elapsed = Math.floor((Date.now() - startTime) / 1000);
@@ -152,12 +154,17 @@
             bar.style.width = percent + "%";
             bar.style.backgroundColor = (elapsed >= target) ? "#4caf50" : "#ffeb3b";
 
-            // Pieper in den letzten 5 Sekunden
+            // Letzte 5 Sekunden Pieper
             if (remaining > 0 && remaining <= 5 && remaining !== timers[n].lastBeep) {
                 timers[n].lastBeep = remaining;
-                const volume = remaining === 1 ? 0.6 : 0.4;
-                const freq = remaining === 1 ? 1200 : 900;
-                beep(freq, 120, volume);
+                const vol = remaining <= 2 ? 0.55 : 0.4;
+                beep(remaining === 1 ? 1100 : 850, 110, vol);
+            }
+
+            // Ende-Signal (einmalig)
+            if (elapsed >= target && !timers[n].ended) {
+                timers[n].ended = true;
+                endSignal();
             }
         }, 200);
     }
@@ -200,7 +207,7 @@
         }
     }
 
-    function resetData() {
+    function resetData() {   // umbenannt, falls du den alten Namen noch hast
         const b = document.querySelector('.reset');
         if (!resetArmed) {
             resetArmed = true;
