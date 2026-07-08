@@ -42,13 +42,41 @@
 
 <script>
     const exercises = [
-        { name: 'Wallsit', desc: 'Rücken an die Wand, Knie 90°.', target: 75 },
-        { name: 'Brust-Press', desc: 'Hände fest zusammendrücken.', target: 60 },
-        { name: 'Rücken-Zug', desc: 'Hände ineinander haken, ziehen.', target: 60 },
-        { name: 'Plank', desc: 'Unterarmstütz, Körper wie Brett.', target: 90 },
-        { name: 'Hollow Hold', desc: 'Bauchspannung, Rücken am Boden.', target: 45 },
-        { name: 'Bird-Dog', desc: 'Vierfüßler, diagonale Streckung.', target: 60 },
-        { name: 'Reverse Plank', desc: 'Stütz hinten, Körper gerade.', target: 60 }
+        {
+            name: 'Wallsit',
+            desc: 'Rücken flach an die Wand. Knie ca. 90°, Füße schulterbreit. Bauch und Gesäß anspannen, ruhig weiteratmen.',
+            target: 75
+        },
+        {
+            name: 'Brust-Press',
+            desc: 'Handflächen vor der Brust kräftig gegeneinander drücken. Schultern tief halten, Brust aufrichten und Spannung gleichmäßig halten.',
+            target: 60
+        },
+        {
+            name: 'Rücken-Zug',
+            desc: 'Hände ineinander haken und kräftig auseinanderziehen. Schulterblätter nach hinten unten ziehen, Rücken bleibt gerade.',
+            target: 60
+        },
+        {
+            name: 'Plank',
+            desc: 'Unterarmstütz. Körper bildet eine gerade Linie von Kopf bis Ferse. Bauch und Gesäß fest anspannen, kein Hohlkreuz.',
+            target: 90
+        },
+        {
+            name: 'Hollow Hold',
+            desc: 'Lendenwirbelsäule fest in den Boden drücken. Beine und Schultern leicht anheben, Spannung im Bauch halten.',
+            target: 45
+        },
+        {
+            name: 'Bird-Dog',
+            desc: 'Im Vierfüßler diagonal Arm und Bein strecken. Rücken gerade halten, Becken nicht verdrehen, Bewegung kontrolliert.',
+            target: 60
+        },
+        {
+            name: 'Reverse Plank',
+            desc: 'Hinterer Stütz. Hüfte anheben bis der Körper eine Linie bildet. Gesäß kräftig anspannen, Schultern stabil halten.',
+            target: 60
+        }
     ];
 
     let intervals={}, pauseInterval, resetArmed=false;
