@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Static Strength Tracker</title>
+    <style>
+        body{font-family:sans-serif;background:#121212;color:#e0e0e0;padding:15px;margin:0}
+        .exercise-card{background:#1e1e1e;padding:20px;margin-bottom:15px;border-radius:12px;border:1px solid #333}
+        h3{margin-top:0}.instructions{color:#aaa;font-style:italic}
+        button{width:100%;padding:16px;margin:8px 0;border:0;border-radius:8px;font-size:1.1em;font-weight:bold;cursor:pointer}
+        .start{background:#4caf50;color:#fff}.stop{background:#f44336;color:#fff}
+        .pause{background:#2196f3;color:#fff}.reset{background:#ff9800;color:#fff}
+        .timer-display{font-size:2.5em;font-weight:bold;color:#ffeb3b;text-align:center;margin:12px 0}
+        .progress-bar-bg{width:100%;height:12px;background:#333;border-radius:6px;margin:12px 0;overflow:hidden}
+        .progress-bar-fill{height:100%;width:0%;background:#ffeb3b;transition:width 0.3s}
+        .stats{text-align:center;color:#bbb;font-size:0.95em;margin-top:12px;padding:12px;background:#252525;border-radius:8px}
+        #pause-zone{position:sticky;top:0;background:#252525;padding:15px;border-radius:12px;margin-bottom:20px;border:2px solid #2196f3;z-index:10}
+        #toast{position:fixed;left:50%;bottom:-120px;transform:translateX(-50%);background:#333;color:#fff;padding:14px 20px;border-radius:10px;transition:.3s;z-index:99}
+        #toast.show{bottom:20px}
+        .target-edit{font-size:0.9em;color:#aaa;cursor:pointer}
+    </style>
+</head>
+<body>
+<div id="pause-zone">
+    <h3>Pausentimer</h3>
+    <div id="pause-display" style="font-size:3.2em;font-weight:bold;text-align:center;">--</div>
+    <button class="pause" onclick="startPause(30)">30s Pause</button>
+    <button class="pause" onclick="startPause(60)">60s Pause</button>
+    <button class="reset" onclick="resetData()">🗑 Daten zurücksetzen</button>
+</div>
+
+<div id="container"></div>
+
+<div style="margin-top:40px;text-align:center">
+    <h3>Übersicht</h3>
+    <img src="./uebungen.png" style="max-width:100%;border-radius:8px" alt="Übungen">
+</div>
+
+<div id="toast"></div>
+
+<script>
+    const exercises = [
+        { name: 'Wallsit', desc: 'Rücken flach an die Wand. Knie ca. 90°, Füße schulterbreit. Bauch und Gesäß anspannen, ruhig weiteratmen.', target: 75 },
+        { name: 'Brust-Press', desc: 'Handflächen vor der Brust kräftig gegeneinander drücken. Schultern tief halten, Brust aufrichten.', target: 60 },
+        { name: 'Rücken-Zug', desc: 'Hände ineinander haken und kräftig auseinanderziehen. Schulterblätter nach hinten unten.', target: 60 },
+        { name: 'Plank', desc: 'Unterarmstütz. Gerade Linie von Kopf bis Ferse. Bauch und Gesäß fest.', target: 90 },
+        { name: 'Hollow Hold', desc: 'Lendenwirbelsäule in den Boden drücken. Beine und Schultern leicht anheben.', target: 45 },
+        { name: 'Bird-Dog - Links', desc: 'Im Vierfüßler diagonal linke Hand + rechtes Bein strecken.', target: 60 },
+        { name: 'Bird-Dog - Rechts', desc: 'Im Vierfüßler diagonal rechte Hand + linkes Bein strecken.', target: 60 },
+        { name: 'Reverse Plank', desc: 'Hinterer Stütz. Hüfte hoch bis gerade Linie. Gesäß kräftig anspannen.', target: 60 }
+    ];
+
+    let timers = {}, pauseInterval, resetArmed = false;
+
+    function historyKey(n) { return n + "_history"; }
+    function targetKey(n) { return n + "_target"; }
+
+    function getHistory(n) {
+        return JSON.parse(localStorage.getItem(historyKey(n)) || "[]");
+    }
+
+    function saveResult(n, seconds) {
+        let h = getHistory(n);
+        h.push(seconds);
+        if (h.length > 15) h.shift();
+        localStorage.setItem(historyKey(n), JSON.stringify(h));
+    }
+
+    function getTarget(n) {
+        return parseInt(localStorage.getItem(targetKey(n))) || exercises.find(e => e.name === n).target;
+    }
+
+    function saveTarget(n, val) {
+        localStorage.setItem(targetKey(n), val);
+    }
+
+    function avg(a) { return a.length ? (a.reduce((x,y)=>x+y,0)/a.length).toFixed(0) : 0; }
+
+    function updateStats(n) {
+        let h = getHistory(n);
+        let best = h.length ? Math.max(...h) : 0;
+        let target = getTarget(n);
+        document.getElementById("stats-" + n).innerHTML = 
+            `🏆 ${best}s &nbsp; 📈 ${avg(h)}s &nbsp; 🎯 <span class="target-edit" onclick="editTarget('${n}')">${target}s</span>`;
+    }
+
+    function toast(msg) {
+        let t = document.getElementById("toast");
+        t.innerHTML = msg;
+        t.classList.add("show");
+        setTimeout(() => t.classList.remove("show"), 2800);
+    }
+
+    function createUI() {
+        let c = document.getElementById("container");
+        c.innerHTML = "";
+        exercises.forEach(ex => {
+            let target = getTarget(ex.name);
+            let d = document.createElement("div");
+            d.className = "exercise-card";
+            d.innerHTML = `
+                <h3>${ex.name}</h3>
+                <div class="instructions">${ex.desc}</div>
+                <div class="timer-display" id="timer-${ex.name}">0s</div>
+                <div class="progress-bar-bg"><div class="progress-bar-fill" id="bar-${ex.name}"></div></div>
+                <button class="start" onclick="startTimer('${ex.name}')">Start</button>
+                <button class="stop" onclick="stopTimer('${ex.name}')">Stop & Speichern</button>
+                <div class="stats" id="stats-${ex.name}"></div>
+            `;
+            c.appendChild(d);
+            updateStats(ex.name);
+        });
+    }
+
+    function startTimer(n) {
+        if (timers[n]) return;
+        const startTime = Date.now();
+        timers[n] = { start: startTime, interval: null };
+
+        timers[n].interval = setInterval(() => {
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            const target = getTarget(n);
+            
+            document.getElementById("timer-" + n).innerText = elapsed + "s";
+            
+            let percent = Math.min((elapsed / target) * 100, 100);
+            let bar = document.getElementById("bar-" + n);
+            bar.style.width = percent + "%";
+            bar.style.backgroundColor = (elapsed >= target) ? "#4caf50" : "#ffeb3b";
+        }, 300);
+    }
+
+    function stopTimer(n) {
+        if (!timers[n]) return;
+        clearInterval(timers[n].interval);
+        
+        const elapsed = Math.floor((Date.now() - timers[n].start) / 1000);
+        timers[n] = null;
+
+        document.getElementById("timer-" + n).innerText = elapsed + "s";
+        saveResult(n, elapsed);
+        updateStats(n);
+
+        let best = Math.max(...getHistory(n));
+        toast(`✅ <b>${n}</b><br>${elapsed}s ${elapsed >= best ? "<br>🏆 Neuer Rekord!" : ""}`);
+    }
+
+    function startPause(s) {
+        clearInterval(pauseInterval);
+        let t = s;
+        const p = document.getElementById("pause-display");
+        p.innerText = t + "s";
+
+        pauseInterval = setInterval(() => {
+            t--;
+            p.innerText = t > 0 ? t + "s" : "Los!";
+            if (t <= 0) clearInterval(pauseInterval);
+        }, 1000);
+    }
+
+    function editTarget(n) {
+        const current = getTarget(n);
+        const neu = prompt(`Neue Zielzeit für ${n} (in Sekunden):`, current);
+        if (neu !== null && !isNaN(neu) && neu > 0) {
+            saveTarget(n, parseInt(neu));
+            updateStats(n);
+            toast(`Zielzeit für ${n} auf ${neu}s geändert`);
+        }
+    }
+
+    function resetData() {
+        const b = document.querySelector('.reset');
+        if (!resetArmed) {
+            resetArmed = true;
+            b.textContent = "⚠ Wirklich alles löschen? Nochmal drücken";
+            setTimeout(() => { resetArmed = false; b.textContent = "🗑 Daten zurücksetzen"; }, 4000);
+            return;
+        }
+        exercises.forEach(e => {
+            localStorage.removeItem(historyKey(e.name));
+            localStorage.removeItem(targetKey(e.name));
+        });
+        createUI();
+        resetArmed = false;
+        b.textContent = "🗑 Daten zurücksetzen";
+        toast("🗑 Alle Daten gelöscht");
+    }
+
+    // Export Funktion (Button könnte man noch hinzufügen)
+    window.exportData = function() {
+        let data = {};
+        exercises.forEach(ex => {
+            data[ex.name] = {
+                target: getTarget(ex.name),
+                history: getHistory(ex.name)
+            };
+        });
+        console.log("Deine Trainingsdaten:", data);
+        alert("Daten wurden in die Konsole ausgegeben (F12). Bei Bedarf kann ich einen Download-Button einbauen.");
+    };
+
+    createUI();
+</script>
+</body>
+</html>
