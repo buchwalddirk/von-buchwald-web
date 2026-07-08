@@ -23,10 +23,9 @@
 </head>
 <body>
 <div id="pause-zone">
-    <h3>Pausentimer</h3>
+    <h3>Pausentimer (Minimum)</h3>
     <div id="pause-display" style="font-size:3.2em;font-weight:bold;text-align:center;">--</div>
-    <button class="pause" onclick="startPause(30)">30s Pause</button>
-    <button class="pause" onclick="startPause(60)">60s Pause</button>
+    <button class="pause" onclick="startPause(30)">30s Pause starten</button>
     <button class="reset" onclick="resetData()">🗑 Daten zurücksetzen</button>
 </div>
 
@@ -186,19 +185,6 @@
         b.textContent = "🗑 Daten zurücksetzen";
         toast("🗑 Alle Daten gelöscht");
     }
-
-    // Export Funktion (Button könnte man noch hinzufügen)
-    window.exportData = function() {
-        let data = {};
-        exercises.forEach(ex => {
-            data[ex.name] = {
-                target: getTarget(ex.name),
-                history: getHistory(ex.name)
-            };
-        });
-        console.log("Deine Trainingsdaten:", data);
-        alert("Daten wurden in die Konsole ausgegeben (F12). Bei Bedarf kann ich einen Download-Button einbauen.");
-    };
 
     createUI();
 </script>
