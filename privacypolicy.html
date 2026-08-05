@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRIVACY POLICY | VON BUCHWALD</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <style>
+        :root {
+            --accent-color: #a30015;
+            --spotlight-hex: #a30015;       
+            --spotlight-size: 70%;
+            --spotlight-opacity: 0.15;
+            --mouse-x: 50%;
+            --mouse-y: 50%;
+        }
+
+        body {
+            background-color: #0d0d0d;
+            background-image: radial-gradient(
+                circle at var(--mouse-x) var(--mouse-y), 
+                color-mix(in srgb, var(--spotlight-hex), transparent calc(100% - (var(--spotlight-opacity) * 100%))) 0%, 
+                #0d0d0d var(--spotlight-size)
+            );
+            color: #ccc;
+            font-family: 'Inter', -apple-system, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .content-container {
+            max-width: 800px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 3rem;
+            border-radius: 2px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 1s ease-out;
+        }
+
+        .reverse {
+            display: inline-block;
+            direction: rtl;
+            unicode-bidi: bidi-override;
+        }
+
+        h1, h2 {
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 0.3rem;
+            font-weight: 200;
+        }
+
+        h1 { font-size: 1.5rem; border-bottom: 1px solid var(--accent-color); padding-bottom: 1rem; margin-bottom: 2rem; }
+        h2 { font-size: 1rem; margin-top: 2rem; color: var(--accent-color); }
+
+        p, li { font-size: 0.9rem; margin-bottom: 1rem; }
+        
+        .back-link {
+            display: inline-block;
+            margin-bottom: 2rem;
+            color: #888;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 0.2rem;
+            transition: color 0.3s;
+        }
+
+        .back-link:hover { color: var(--accent-color); }
+
+        strong { color: #fff; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        footer {
+            margin-top: 3rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: center;
+        }
+
+        .footer-logo {
+            font-size: 0.6rem;
+            letter-spacing: 0.4rem;
+            color: #555;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="content-container">
+        <a href="javascript:history.back()" class="back-link">← Back</a>
+        
+        <h1>Privacy Policy</h1>
+
+        <p>Last updated: August 2026</p>
+
+        <h2>1. Overview</h2>
+        <p>This Privacy Policy describes how personal information is handled on this website. As an individual operator based in the United States, I am committed to respecting your privacy.</p>
+
+        <h2>2. Contact Information</h2>
+        <p>
+            Dirk von Buchwald<br>
+            USA<br>
+            Email: <span class="reverse">moc.liamg@bew+kriD.dlawhcuB</span>
+        </p>
+
+        <h2>3. Information Collected & Hosting</h2>
+        <p><strong>Server Logs:</strong> This website is hosted on GitHub Pages. GitHub may collect technical information automatically sent by your browser, such as IP addresses, browser type, operating system, and timestamp of the request, to maintain service security and performance.</p>
+        
+        <p><strong>Cookies & Tracking:</strong> This website does not use cookies, tracking tools, or analytics services. No user profiling is conducted.</p>
+
+        <h2>4. Third-Party Links</h2>
+        <p>This website may contain links to external third-party platforms (e.g., YouTube, Instagram, Spotify, Exophase, GitHub). Clicking these links redirects you to third-party sites whose data practices are governed by their respective privacy policies.</p>
+
+        <h2>5. Your Privacy Rights</h2>
+        <p>Depending on your jurisdiction (including states like California under the CCPA/CPRA), you may have rights regarding your personal information, such as requesting access to or deletion of data collected. We do not sell or share personal information with third parties.</p>
+
+        <footer>
+            <div class="footer-logo">Est. 1984</div>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('mousemove', e => {
+            const x = (e.clientX / window.innerWidth * 100).toFixed(2);
+            const y = (e.clientY / window.innerHeight * 100).toFixed(2);
+            document.documentElement.style.setProperty('--mouse-x', `${x}%`);
+            document.documentElement.style.setProperty('--mouse-y', `${y}%`);
+        });
+    </script>
+</body>
+</html>
