@@ -22,6 +22,8 @@
         button { padding: 14px 20px; border: 0; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; }
         .save-btn { background: #4caf50; color: #fff; width: 100%; margin-top: 5px; }
         .reset-btn { background: #ff9800; color: #fff; width: 100%; margin-top: 20px; }
+        .export-btn { background: #2196F3; color: #fff; width: 100%; margin-top: 10px; }
+        .import-btn { background: #9c27b0; color: #fff; width: 100%; margin-top: 10px; }
         
         .history-container { background: #252525; padding: 12px; border-radius: 8px; margin-top: 15px; }
         .history-title { font-size: 0.85em; color: #888; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -44,16 +46,18 @@
 <body>
 
 <div id="container"></div>
-<button class="reset-btn" onclick="resetAllData()">🗑 Alle Trainingsdaten löschen</button>
 
-    <!-- Grafik für Muskelaktivierung -->
+<!-- Steuerungs-Buttons -->
+<button class="reset-btn" onclick="resetAllData()">🗑 Alle Trainingsdaten löschen</button>
+<button class="export-btn" onclick="exportData()">💾 Daten sichern (JSON)</button>
+<button class="import-btn" onclick="document.getElementById('importFile').click()">📂 Daten laden</button>
+<input type="file" id="importFile" style="display: none" onchange="importData(event)">
+
+<!-- Grafik für Muskelaktivierung -->
 <div class="image-container">
     <img src="lifting.png" alt="Muskelaktivierungs-Karte">
 </div>
-            <!-- Neue Buttons unter den Reset-Button einfügen -->
-    <button class="export-btn" onclick="exportData()" style="background: #2196F3; color: #fff; width: 100%; margin-top: 10px;">💾 Daten sichern (JSON)</button>
-    <button class="import-btn" onclick="document.getElementById('importFile').click()" style="background: #9c27b0; color: #fff; width: 100%; margin-top: 10px;">📂 Daten laden</button>
-    <input type="file" id="importFile" style="display: none" onchange="importData(event)">    
+
 <div id="toast"></div>
 
 <script>
@@ -93,7 +97,6 @@
                 name: 'Trizeps-Drücken am Seilzug (Pushdowns)', 
                 desc: 'Am Seilzug leicht nach vorne gelehnt stehen. Rumpf/L4-L5 fest anspannen, Oberarme seitlich fixieren und nur die Unterarme kontrolliert nach unten strecken.' 
             }
-            // Neue Übungen einfach im gleichen Format anfügen
         ]
     };
 
@@ -127,7 +130,6 @@
         
         history.push({ weight, sets: [s1, s2, s3], date: dateStr });
         
-        // Dynamisch an CONFIG.maxHistoryEntries anpassen
         if (history.length > CONFIG.maxHistoryEntries) {
             history = history.slice(-CONFIG.maxHistoryEntries);
         }
@@ -135,7 +137,6 @@
         localStorage.setItem(historyKey(id), JSON.stringify(history));
         localStorage.setItem(weightKey(id), weight);
         
-        // Felder leeren
         ['s1', 's2', 's3'].forEach(s => document.getElementById(`${s}-${id}`).value = "");
         
         updateHistoryUI(id);
@@ -235,8 +236,6 @@
         toast("🗑 Daten zurückgesetzt");
     }
 
-    createUI();
-
     function exportData() {
         const data = {};
         CONFIG.exercises.forEach(ex => {
@@ -272,6 +271,8 @@
         };
         reader.readAsText(file);
     }
+
+    createUI();
 </script>
 </body>
 </html>
